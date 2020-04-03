@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet debug page</title>
+
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" integrity="sha512-07I2e+7D8p6he1SIM+1twR5TIrhUQn9+I6yjqD53JQjFiMf8EtC93ty0/5vJTZGF8aAocvHYNEDJajGdNx1IsQ==" crossorigin="" />
+	<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet-src.js" integrity="sha512-WXoSHqw/t26DszhdMhOXOkI7qCiv5QWXhH9R7CgvgZMHz1ImlkVQ3uNsiQKu5wwbbxtPzFXd1hK4tzno2VqhpA==" crossorigin=""></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+	<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+	<link rel="stylesheet" href="dist/MarkerCluster.css" />
+	<link rel="stylesheet" href="dist/MarkerCluster.Default.css" />
+	<script src="dist/leaflet.markercluster-src.js"></script>
+	
+	<script src="tweets.js"></script>
+<style>
+	#map {
+                
+				height: 600px; 
+				border: 1px solid #ccc;
+             }
+	</style>
+</head>
+<body>
+
+	<div id="map"></div>
+	<script type="text/javascript">
+
+		var map = L.map('map',{
+        center: [-6.746844, 109.275107],
+        zoom: 8
+        });
+	
+		
+		var google = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+		   maxZoom: 20,
+		   subdomains:['mt0','mt1','mt2','mt3'],
+		   attribution: 'Google Satellite'
+		   }).addTo(map);
+		   
+		   var gmaps = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+		   maxZoom: 20,
+		   subdomains:['mt0','mt1','mt2','mt3'],
+		   attribution: 'Google Streets'
+			});
+			
+		var markers = L.markerClusterGroup({ chunkedLoading: true });
+		
+		for (var i = 0; i < addressPoints.length; i++) {
+			var a = addressPoints[i];
+			var title = a[2];
+			var marker = L.marker(L.latLng(a[0], a[1]), { title: title });
+			marker.bindPopup(title);
+			markers.addLayer(marker);
+		}
+
+		var baseMaps = {
+		"Google Maps" : gmaps,
+		"Google Satelit": google
+		};
+		
+		L.control.layers(baseMaps).addTo(map);
+		map.addLayer(markers);
+		map.addControl(new L.Control.Fullscreen());
+
+	</script>
+</body>
+</html>
